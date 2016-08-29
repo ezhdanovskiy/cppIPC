@@ -17,15 +17,14 @@ struct SharedData {
 };
 std::atomic<bool> ready (false);
 
-void increase(SharedData *sd, int count) {
+void increase(SharedData &sd, int count) {
     while (!ready) { std::this_thread::yield(); }
     LOG1(count)
     for (int j = 0; j < count; ++j) {
-//        std::atomic::fetch_add();
-        sd->i++;
-        sd->i1++;
-        sd->i2++;
-        sd->i3++;
+        sd.i++;
+        sd.i1++;
+        sd.i2++;
+        sd.i3++;
     }
 }
 
@@ -43,7 +42,7 @@ int main() {
             int count = rand() % 10000;
             LOG1(count)
             countTotal += count;
-            threads.emplace_back(increase, &sd, count);
+            threads.emplace_back(increase, std::ref(sd), count);
         }
         ready = true;
 //        usleep(1000);
