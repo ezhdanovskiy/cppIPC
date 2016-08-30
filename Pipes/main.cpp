@@ -11,7 +11,7 @@ std::string convert(const std::string &in) {
     std::string out(in.size() * 2, ' ');
     LOG1(in.size());
     LOG1(out.size());
-    iconv_t cd = iconv_open("utf8", "cp1251");
+    iconv_t cd = iconv_open("UTF-8", "CP1251");
     if (cd == (iconv_t)(-1)) {
         err(1, "iconv_open");
     }
@@ -59,6 +59,7 @@ int main() {
             }
             LOG1(wasWritten);
             close(pipefd[0]);
+            fileOut.close();
             exit(0);
         }
         default: {
@@ -67,6 +68,7 @@ int main() {
             std::ifstream fileIn("in.cp1251.txt");
             std::stringstream sin;
             sin << fileIn.rdbuf();
+            fileIn.close();
             std::string out = convert(sin.str());
             write(pipefd[1], out.c_str(), out.size());
             close(pipefd[1]);
