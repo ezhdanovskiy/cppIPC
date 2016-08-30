@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iconv.h>
 #include <err.h>
+#include <stdlib.h>
 
 std::string convert(const std::string &in) {
     std::string out(in.size() * 2, ' ');
