@@ -13,11 +13,16 @@ std::string convert(const std::string &in) {
     if (cd == (iconv_t)(-1)) {
         err(1, "iconv_open");
     }
-    char *inbuf = const_cast<char*>(&in[0]);
     size_t inbytesleft = in.size();
     char *outbuf = &out[0];
     size_t outbytesleft = out.size();
+#if defined(__linux__)
+    char *inbuf = const_cast<char*>(&in[0]);
     iconv(cd, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+#else
+    const char *inbuf = &in[0];
+    iconv(cd, &inbuf, &inbytesleft, &outbuf, &outbytesleft);
+#endif
     iconv_close(cd);
     out.resize(out.size() - outbytesleft);
     LOG1(out.size());

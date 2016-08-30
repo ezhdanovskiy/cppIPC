@@ -1,13 +1,10 @@
-#include <iostream>
+#include "Logger.h"
+
 #include <future>
-#include <unistd.h>
 #include <sstream>
 #include <vector>
 #include <atomic>
-
-#define LOG_END "\t\t\t[" << std::this_thread::get_id() << "][" << __LINE__ << "]" << std::endl;
-#define LOG(chain) std::cout << chain << LOG_END
-#define LOG1(el) std::cout << #el << "=" << (el) << LOG_END
+#include <stdlib.h>
 
 struct SharedData {
     std::atomic_int i;
