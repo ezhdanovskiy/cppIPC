@@ -5,6 +5,7 @@
 #include <iconv.h>
 #include <err.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 
 std::string convert(const std::string &in) {
     std::string out(in.size() * 2, ' ');
@@ -36,8 +37,9 @@ int main() {
         err(1, "pipe");
     }
 
+    int pid;
     int rv;
-    switch(fork()) {
+    switch(pid = fork()) {
         case -1: {
             err(1, "fork");
         }
@@ -68,8 +70,9 @@ int main() {
             std::string out = convert(sin.str());
             write(pipefd[1], out.c_str(), out.size());
             close(pipefd[1]);
-            wait();
-            LOG1(WEXITSTATUS(rv));
+            int status;
+            waitpid(pid, &status, 0);
+            LOG1(status);
         }
     }
     return 0;
