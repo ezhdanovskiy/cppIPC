@@ -16,8 +16,8 @@ int main(int argc, char **argv) {
         }
         case 0: {
             usleep(100000);
-            int flags = O_RDWR;
-//            int flags = O_RDONLY; // do not lock
+//            int flags = O_RDWR | O_NONBLOCK;
+            int flags = O_RDONLY | O_NONBLOCK; // do not lock
             fd = ::open(fname.c_str(), flags, mode);
             LOG("READER  ::open('" << fname << "', " << flags << ", " << mode << ") return " << fd);
             if (-1 == fd) {
@@ -53,8 +53,13 @@ int main(int argc, char **argv) {
             break;
         }
     }
+
     LOG("F_ULOCK");
-    close(fd);
+    int res = lockf(fd, F_ULOCK, 0);
+    if (-1 == res) {
+        LOG("open error(" << errno << "): " << strerror(errno));
+    }
+
     LOG("close(" << fd << ")");
     close(fd);
     return 0;
