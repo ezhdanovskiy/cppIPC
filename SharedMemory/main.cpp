@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <err.h>
+#include <stdlib.h>
 
 #define SHMSIZE 27
 #define SHMKEY 2009
